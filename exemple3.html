@@ -1,0 +1,44 @@
+
+<!-- boucle de rendu : cube qui tourne
+    lumiere directionnelle
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cube qui tourne + eclairage</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.150.1-r75e9MvYwn7pBFuUt6Gu/mode=imports,min/optimized/three.js';
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,1000);
+        camera.position.z =4
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+        const geometry= new THREE.BoxGeometry();
+        const material=new THREE.MeshPhongMaterial({color: 0x10faa1});
+        const cube= new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        const dirLightIntensity=1;
+        const dirLight = new THREE.DirectionalLight({color: 0xffffff}, dirLightIntensity);
+        dirLight.position.set(-1,2,4);
+        scene.add(dirLight);
+        function animate(){
+            requestAnimationFrame(animate);
+            cube.rotation.x +=0.01;
+            cube.rotation.y +=0.01;
+            renderer.render(scene, camera)
+        }
+        animate();
+    </script>
+</body>
+</html>
