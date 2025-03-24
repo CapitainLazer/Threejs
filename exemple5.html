@@ -27,7 +27,7 @@
         let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
         let choixRotationAutomatiqueCube= false;
         const camera = new THREE.PerspectiveCamera(75,ratioLargeurHauteur,0.1,1000);
-        camera.position.z =4
+        camera.position.z =5
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         document.body.appendChild(renderer.domElement);
@@ -46,6 +46,96 @@
         lineCube.material.opacity=0.25;
         lineCube.material.transparent=true;
         scene.add(lineCube);
+        const geometrypara = new THREE.BoxGeometry( 1, 2, 1 ); 
+const material = new THREE.MeshPhongMaterial( {color: 0xff0000} ); 
+const paralepiped = new THREE.Mesh( geometrypara, material );
+paralepiped.position.x = -2
+
+scene.add( paralepiped );
+        const wireframepara = new THREE.WireframeGeometry(geometrypara);
+        const linepara= new THREE.LineSegments(wireframepara);
+        linepara.material.depthTest=false;
+        linepara.material.opacity=0.25;
+        linepara.material.transparent=true;
+        linepara.position.x = -2;
+
+        scene.add(linepara);
+
+        const geometrycone = new THREE.ConeGeometry( 0.5, 2, 8, 2 ); 
+const materialcone = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+const cone = new THREE.Mesh(geometrycone, materialcone ); 
+cone.position.x = -4;
+scene.add( cone );
+        const wireframecone = new THREE.WireframeGeometry(geometrycone);
+        const linecone= new THREE.LineSegments(wireframecone);
+        linecone.material.depthTest=false;
+        linecone.material.opacity=0.25;
+        linecone.material.transparent=true;
+        linecone.position.x = -4;
+
+        scene.add(linecone);
+
+        const geometrycyl = new THREE.CylinderGeometry( 0.5, 0.5, 2,32 ); 
+const materialcyl = new THREE.MeshPhongMaterial( {color: 0x0000ff} ); 
+const cylinder = new THREE.Mesh( geometrycyl, materialcyl );
+cylinder.position.x = -6;
+ scene.add( cylinder );
+ 
+
+        const wireframecyl = new THREE.WireframeGeometry(geometrycyl);
+        const linecyl= new THREE.LineSegments(wireframecyl);
+        linecyl.material.depthTest=false;
+        linecyl.material.opacity=0.25;
+        linecyl.material.transparent=true;
+        linecyl.position.x = -6;
+
+        scene.add(linecyl);
+
+        const geometrysphere = new THREE.SphereGeometry( 1, 24, 16 ); 
+const materialsphere = new THREE.MeshPhongMaterial( { color: 0xf000ff } ); 
+const sphere = new THREE.Mesh( geometrysphere, materialsphere ); 
+sphere.position.x = 2;
+scene.add( sphere );
+
+const wireframesphere = new THREE.WireframeGeometry(geometrysphere);
+        const linesphere= new THREE.LineSegments(wireframesphere);
+        linesphere.material.depthTest=false;
+        linesphere.material.opacity=0.25;
+        linesphere.material.transparent=true;
+        linesphere.position.x = 2;
+
+        scene.add(linesphere);
+
+        const geometrytorus = new THREE.TorusGeometry(0.5, 0.2, 8, 15); 
+const materialtorus = new THREE.MeshPhongMaterial( { color: 0xffff00 } ); 
+const torus = new THREE.Mesh( geometrytorus, materialtorus );
+torus.position.x = 4;
+scene.add( torus );
+
+
+const wireframetorus= new THREE.WireframeGeometry(geometrytorus);
+        const linetorus= new THREE.LineSegments(wireframetorus);
+        linetorus.material.depthTest=false;
+        linetorus.material.opacity=0.25;
+        linetorus.material.transparent=true;
+        linetorus.position.x = 4;
+
+        scene.add(linetorus);
+        const geometryknot = new THREE.TorusKnotGeometry( 0.5, 0.20, 50, 4); 
+const materialknot = new THREE.MeshPhongMaterial( { color: 0xfffff0 } ); 
+const torusKnot = new THREE.Mesh( geometryknot, materialknot ); 
+torusKnot.position.x = 6;
+
+scene.add( torusKnot );
+const wireframeknot= new THREE.WireframeGeometry(geometryknot);
+        const lineknot= new THREE.LineSegments(wireframeknot);
+        lineknot.material.depthTest=false;
+        lineknot.material.opacity=0.25;
+        lineknot.material.transparent=true;
+        lineknot.position.x = 6;
+
+        scene.add(lineknot);
+
         function animate(){
             requestAnimationFrame(animate);
             if(choixRotationAutomatiqueCube){
@@ -53,6 +143,14 @@
             cube.rotation.y +=0.01;
             lineCube.rotation.x +=0.01;
             lineCube.rotation.y +=0.01;
+            cone.rotation.x +=0.005;
+            cone.rotation.y +=0.005;
+            linecone.rotation.x +=0.005;
+            linecone.rotation.y +=0.005;
+            cone.rotation.x +=0.005;
+            cone.rotation.y +=0.005;
+            linecone.rotation.x +=0.005;
+            linecone.rotation.y +=0.005;
             }
             renderer.render(scene, camera)
         }

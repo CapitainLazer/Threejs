@@ -1,0 +1,88 @@
+
+<!-- boucle de rendu : cube qui tourne
+    exo 3 :lumiere directionnelle
+    exo 4 : redimention
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cube qui tourne + eclairage + redimentionnement</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+        import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.150.1-r75e9MvYwn7pBFuUt6Gu/mode=imports,min/optimized/three.js';
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color (0xa0a0a0);
+        let SCREEN_WIDTH = window.innerWidth;
+        let SCREEN_HEIGHT = window.innerHeight;
+        let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
+        let choixRotationAutomatiqueCube= false;
+        const cameraper = new THREE.PerspectiveCamera(75,ratioLargeurHauteur,0.1,1000);
+        cameraper.position.z =4;
+        const tailleFrustrum= 7;
+        const cameraortho = new THREE.PerspectiveCamera(
+            -0.5 *tailleFrustrum * ratioLargeurHauteur, 0.5*tailleFrustrum * ratioLargeurHauteur,
+             0.5 * tailleFrustrum,- 0.5 * tailleFrustrum, 1, 1000 );
+        cameraortho.position.z =1.5;
+
+        let cameraactive=cameraper;
+        let choixcamera= true;
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        document.body.appendChild(renderer.domElement);
+        const geometry= new THREE.BoxGeometry();
+        const material=new THREE.MeshPhongMaterial({color: 0x10faa1});
+        const cube= new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        const dirLightIntensity=1;
+        const dirLight = new THREE.DirectionalLight({color: 0xffffff}, dirLightIntensity);
+        dirLight.position.set(-1,2,4);
+        scene.add(dirLight);
+        function animate(){
+            requestAnimationFrame(animate);
+            if(choixRotationAutomatiqueCube){
+            cube.rotation.x +=0.01;
+            cube.rotation.y +=0.01;
+            }
+            renderer.render(scene, camera)
+        }
+        animate();
+        function onWindowResize(){
+            console.log("redimensionnement de la fenetre");
+            SCREEN_WIDTH = window.innerWidth;
+            let SCREEN_HEIGHT = window.innerHeight;
+            let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
+            camera.aspect= ratioLargeurHauteur;
+            camera.updateProjectionMatrix();
+            renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        }
+        window.addEventListener("resize",onWindowResize);
+
+        
+        function evenementTouche(event){
+            switch(event.key){
+                case 'r':
+                    choixRotationAutomatiqueCube = !choixRotationAutomatiqueCube;
+                    if (choixRotationAutomatiqueCube)
+                        console.log("demarrage de la rotation auto");
+                    else
+                        console.log("arret de la rotation auto")
+                    break;
+                case 'c':
+                    
+                    
+            }
+        }
+        document.addEventListener("keydown",evenementTouche);
+    </script>
+</body>
+</html>
