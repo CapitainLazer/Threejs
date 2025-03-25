@@ -27,7 +27,9 @@
     </script>
     <script id="fragmentShader" type="x-shader/x-fragment">
         varying vec2 vUv;
+        uniform float time;
         void main(){
+            
             float a, b ,c, d;
             /*
             vec2 p= vUv;
@@ -35,10 +37,21 @@
 
             vec2 p= vUv;
             a=p.y;
-            */
+            
             vec2 p= vUv;
             c=p.x;
             a=p.y;
+
+            vec2 p= -1.0+2.0*vUv;
+            c = cos(p.x);
+            */
+
+            float t = time*2.0;
+            vec2 p= -1.0+2.0*vUv;
+            c = cos(p.x + t);
+            b= cos(p.y+t);
+            a= sin(p.y+t);
+            a= cos(p.x+t);
             gl_FragColor= vec4(a, b ,c, d);
         }
     </script>
@@ -56,36 +69,43 @@
         renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         document.body.appendChild(renderer.domElement);
 
-        // const geometry= new THREE.BoxGeometry();
-        // const material=new THREE.ShaderMaterial({
-        //     vertexShader:document.getElementById('vertexShader').textContent,
-        //     fragmentShader:document.getElementById('fragmentShader').textContent
+        let uniforms;
+        uniforms={
+            time:{value: 1.0}
+        }
 
-        // });
-        // const cube= new THREE.Mesh(geometry, material);
-        // scene.add(cube);
-
-        const geometryknot = new THREE.TorusKnotGeometry( 0.5, 0.20, 50, 4); 
-        const materialknot=new THREE.ShaderMaterial({
+        const geometry= new THREE.BoxGeometry();
+        const material=new THREE.ShaderMaterial({
+            uniforms:uniforms,
             vertexShader:document.getElementById('vertexShader').textContent,
             fragmentShader:document.getElementById('fragmentShader').textContent
-        })
-        const torusKnot = new THREE.Mesh( geometryknot, materialknot ); 
-        scene.add( torusKnot );
 
-        // const dirLightIntensity=1;
-        // const dirLight = new THREE.DirectionalLight({color: 0xffffff}, dirLightIntensity);
-        // dirLight.position.set(-1,2,4);
-        // scene.add(dirLight);
+        });
+        const cube= new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        // const geometryknot = new THREE.TorusKnotGeometry( 0.5, 0.20, 50, 4); 
+        // const materialknot=new THREE.ShaderMaterial({
+        //     vertexShader:document.getElementById('vertexShader').textContent,
+        //     fragmentShader:document.getElementById('fragmentShader').textContent
+        // })
+        // const torusKnot = new THREE.Mesh( geometryknot, materialknot ); 
+        // scene.add( torusKnot );
+
+        const dirLightIntensity=1;
+        const dirLight = new THREE.DirectionalLight({color: 0xffffff}, dirLightIntensity);
+        dirLight.position.set(-1,2,4);
+        scene.add(dirLight);
 
         function animate(){
             requestAnimationFrame(animate);
+            uniforms['time'].value=performance.now()/1000;
             if(choixRotationAutomatique){
-                // cube.rotation.x +=0.1;
-                // cube.rotation.y +=0.1;
+                cube.rotation.x +=0.01;
+                cube.rotation.y +=0.01;
 
-                torusKnot.rotation.x +=0.05;
-                torusKnot.rotation.y +=0.05;
+                // torusKnot.rotation.x +=0.05;
+                // torusKnot.rotation.y +=0.05;
             }
             renderer.render(scene, camera)
         }
