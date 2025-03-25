@@ -1,0 +1,88 @@
+
+<!-- boucle de rendu : cube qui tourne
+    exo 3 :lumiere directionnelle
+    exo 4 : redimention
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cube qui tourne + eclairage + redimentionnement</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <script type="module">
+        // import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.150.1-r75e9MvYwn7pBFuUt6Gu/mode=imports,min/optimized/three.js';
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.121.1/build/three.module.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/loaders/GLTFLoader.js';
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color (0xa0a0a0);
+        let SCREEN_WIDTH = window.innerWidth;
+        let SCREEN_HEIGHT = window.innerHeight;
+        let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
+        const camera = new THREE.PerspectiveCamera(75,ratioLargeurHauteur,0.1,1000);
+        camera.position.z =4;
+
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        const controls = new OrbitControls(camera,renderer.domElement);
+        controls.update();
+        controls.minDistance=2;
+        controls.maxDistance=10;
+        controls.maxPolarAngle= Math.PI / 2;
+        controls.dampingFactor= 0.05;
+        document.body.appendChild(renderer.domElement);
+
+        const loaderGLTF = new GLTFLoader();
+        loaderGLTF.load(
+            '.DamagedHelmet/glTF/DamagedHelmet.gltf',
+            function(gltf){
+              scene.add(gltf.scene);
+            },
+            undefined,
+            function(err){
+                console.error('erreur de chargement', err);
+            }
+        )
+
+        const dirLightIntensity=1;
+        const dirLight = new THREE.DirectionalLight({color: 0xffffff}, dirLightIntensity);
+        dirLight.position.set(-1,2,4);
+        scene.add(dirLight);
+
+        function animate(){
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera)
+        }
+        animate();
+        function onWindowResize(){
+            console.log("redimensionnement de la fenetre");
+            SCREEN_WIDTH = window.innerWidth;
+            let SCREEN_HEIGHT = window.innerHeight;
+            let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
+            camera.aspect= ratioLargeurHauteur;
+            camera.updateProjectionMatrix();
+            renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+            
+        }
+        window.addEventListener("resize",onWindowResize);
+
+        
+        function evenementTouche(event){
+            switch(event.key){
+               
+            }
+        }
+        document.addEventListener("keydown",evenementTouche);
+    </script>
+</body>
+</html>

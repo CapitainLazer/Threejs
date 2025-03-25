@@ -29,8 +29,10 @@
         const camera = new THREE.PerspectiveCamera(35,ratioLargeurHauteur,1,15);
         camera.position.set (3,0.15,3);
         const cameraTarget= new TREE.Vector3(0,-0.25,0)
+
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        renderershadowMap.enable = true;
         const controls = new OrbitControls(camera,renderer.domElement);
         controls.update();
         controls.minDistance=2;
@@ -84,11 +86,11 @@
         dirLight1.Shadow.camera.bottom = -d1;
         dirLight1.Shadow.camera.near = 1;
         dirLight1.Shadow.camera.far = 10;
-        dirLight1.Shadow.camera.bias = 0.02;
+        dirLight1.Shadow.camera.bias = -0.02;
 
         const dirLightIntensity2=1;
         const dirLight2 = new THREE.DirectionalLight( 0xffffff, dirLightIntensity2);
-        dirLight.position.set(3,3,3);
+        dirLight.position.set(0.5,1,-1);
         scene.add(dirLight2);
         dirLight2.castShadow = true;
         const d2 = 1;
@@ -98,11 +100,15 @@
         dirLight2.Shadow.camera.bottom = -d1;
         dirLight2.Shadow.camera.near = 1;
         dirLight2.Shadow.camera.far = 10;
-        dirLight2.Shadow.camera.bias = 0.02;
+        dirLight2.Shadow.camera.bias = -0.02;
 
         function animate(){
             requestAnimationFrame(animate);
             controls.update();
+            if(choixRotationAutomatiqueCube){
+            cube.rotation.x +=0.01;
+            cube.rotation.y +=0.01;
+            }
             renderer.render(scene, camera)
         }
         animate();
