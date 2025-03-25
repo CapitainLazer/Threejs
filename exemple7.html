@@ -19,25 +19,30 @@
 <body>
     <script type="module">
         import * as THREE from 'https://cdn.skypack.dev/pin/three@v0.150.1-r75e9MvYwn7pBFuUt6Gu/mode=imports,min/optimized/three.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.121.1/examples/jsm/controls/OrbitControls.js';
+        
         const scene = new THREE.Scene();
         scene.background = new THREE.Color (0xa0a0a0);
         let SCREEN_WIDTH = window.innerWidth;
         let SCREEN_HEIGHT = window.innerHeight;
         let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
         let choixRotationAutomatiqueCube= false;
-        const cameraper = new THREE.PerspectiveCamera(75,ratioLargeurHauteur,0.1,1000);
-        cameraper.position.z =5;
-        const tailleFrustrum= 7;
-        const cameraortho = new THREE.PerspectiveCamera(
-            -0.5 *tailleFrustrum * ratioLargeurHauteur, 0.5*tailleFrustrum * ratioLargeurHauteur,
-             0.5 * tailleFrustrum,- 0.5 * tailleFrustrum, 1, 1000 );
-        cameraortho.position.z =5;
-
-        let cameraactive=cameraper;
-        let choixcamera= true;
+        let choixactivationcontrolespan=true ;
+        let choixactivationcontrolesrotationcontroles = false;
+        let choixactivationcontroleszoom = true;
+        let choixactivationcontrolesamortissement = false;
+        const camera = new THREE.PerspectiveCamera(75,ratioLargeurHauteur,0.1,1000);
+        camera.position.z =4;
+        
 
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        const controls = new OrbitControls(camera,renderer.domElement);
+        controls.update();
+        controls.minDistance=2;
+        controls.maxDistance=10;
+        controls.maxPolarAngle= Math.PI / 2;
+        controls.dampingFactor= 0.05;
         document.body.appendChild(renderer.domElement);
         const geometry= new THREE.BoxGeometry();
         const material=new THREE.MeshPhongMaterial({color: 0x10faa1});
@@ -53,7 +58,7 @@
             cube.rotation.x +=0.01;
             cube.rotation.y +=0.01;
             }
-            renderer.render(scene, cameraactive)
+            renderer.render(scene, camera)
         }
         animate();
         function onWindowResize(){
@@ -61,16 +66,10 @@
             SCREEN_WIDTH = window.innerWidth;
             let SCREEN_HEIGHT = window.innerHeight;
             let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
-            cameraper.aspect= ratioLargeurHauteur;
-            cameraper.updateProjectionMatrix();
-
-            cameraortho.left = -0.5*tailleFrustrum*ratioLargeurHauteur;
-            cameraortho.right=0.5 * tailleFrustrum*ratioLargeurHauteur;
-            cameraortho.top=0.5*tailleFrustrum;
-            cameraortho.bottom= -0.5*tailleFrustrum;
-            cameraortho.updateProjectionMatrix();
-
+            camera.aspect= ratioLargeurHauteur;
+            camera.updateProjectionMatrix();
             renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+            controls.update();
         }
         window.addEventListener("resize",onWindowResize);
 
@@ -84,18 +83,31 @@
                     else
                         console.log("arret de la rotation auto")
                     break;
-                case 'c':
-                    choixcamera= ! choixcamera;
-                    if(choixcamera){
-                        console.log("projection perspective");
-                        cameraactive= cameraper;
+                case 'p':
+                    if(choixactivationcontrolespan){
+                        controls.enablePan = true;
                     }
-                    else {
-                        console.log("projection orthographique")
-                        cameraactive=cameraortho;
+                    else{
+                        controls.enablePan = false;
                     }
-
-                    break
+                    break;
+                    case 'q':
+                        choixactivationcontrolesrotationcontroles=! choixactivationcontrolesrotationcontroles;
+                        if(choixactivationcontrolesrotationcontroles){
+                            controls.autoRotate = true;
+                        }
+                        else{
+                            controls.autoRotate=false;
+                        }
+                        case 'e':
+                            choixactivationcontrolesamortissement =!choixactivationcontrolesamortissement;
+                            if (choixactivationcontrolesamortissement){
+                                controls.enableDamping=true
+                            }
+                            else{
+                                controls.enableDamping = false
+                            }
+                            break;
             }
         }
         document.addEventListener("keydown",evenementTouche);

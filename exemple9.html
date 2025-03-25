@@ -24,36 +24,55 @@
         let SCREEN_WIDTH = window.innerWidth;
         let SCREEN_HEIGHT = window.innerHeight;
         let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
+
         let choixRotationAutomatiqueCube= false;
-        const cameraper = new THREE.PerspectiveCamera(75,ratioLargeurHauteur,0.1,1000);
-        cameraper.position.z =5;
-        const tailleFrustrum= 7;
-        const cameraortho = new THREE.PerspectiveCamera(
-            -0.5 *tailleFrustrum * ratioLargeurHauteur, 0.5*tailleFrustrum * ratioLargeurHauteur,
-             0.5 * tailleFrustrum,- 0.5 * tailleFrustrum, 1, 1000 );
-        cameraortho.position.z =5;
-
-        let cameraactive=cameraper;
-        let choixcamera= true;
-
+        
+        const camera = new THREE.PerspectiveCamera(75,ratioLargeurHauteur,0.1,1000);
+        camera.position.z =4
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
+        
         document.body.appendChild(renderer.domElement);
+        
         const geometry= new THREE.BoxGeometry();
-        const material=new THREE.MeshPhongMaterial({color: 0x10faa1});
+        const material=new THREE.MeshPhongMaterial({color: 0xFFFFFF});
         const cube= new THREE.Mesh(geometry, material);
         scene.add(cube);
+
+        const AmbientLightIntensity = 1;
+        const AmbientLight =new THREE.AmbientLight(0xFFFFFF, AmbientLightIntensity);
+        AmbientLight.position.set(-1,2,4);
+        
         const dirLightIntensity=1;
-        const dirLight = new THREE.DirectionalLight({color: 0xffffff}, dirLightIntensity);
+        const dirLight = new THREE.DirectionalLight(0xffffff,dirLightIntensity);
         dirLight.position.set(-1,2,4);
+        dirLight.target.position.set(0,0,-3)
         scene.add(dirLight);
+        scene.add(dirLight.target);
+
+        const pointLightIntensity = 2;
+        const pointLight1 = new THREE.PointLight(0xff0000, pointLightIntensity);
+        pointLight1.position.set(0,0,2);
+        const pointLight2 = new THREE.PointLight(0x00ff00, pointLightIntensity);
+        pointLight2.position.set(0,2,0);
+        const pointLight3 = new THREE.PointLight(0x0000ff, pointLightIntensity);
+        pointLight3.position.set(2,0,0);
+        scene.add(pointLight1, pointLight2 , pointLight3);
+
+        const spotLightintensity=0.7;
+        const spotLightAngle= Math.PI/16;
+        const spotLightPenumbra=0.5
+        const spotLight = new THREE.SpotLight(0xff0000, spotLightintensity,0,spotLightAngle,spotLightPenumbra);
+        spotLight.position.set(0,0,2);
+        scene.add(spotLight)
+
         function animate(){
             requestAnimationFrame(animate);
             if(choixRotationAutomatiqueCube){
             cube.rotation.x +=0.01;
             cube.rotation.y +=0.01;
             }
-            renderer.render(scene, cameraactive)
+            renderer.render(scene, camera)
         }
         animate();
         function onWindowResize(){
@@ -61,15 +80,8 @@
             SCREEN_WIDTH = window.innerWidth;
             let SCREEN_HEIGHT = window.innerHeight;
             let ratioLargeurHauteur = SCREEN_WIDTH/SCREEN_HEIGHT;
-            cameraper.aspect= ratioLargeurHauteur;
-            cameraper.updateProjectionMatrix();
-
-            cameraortho.left = -0.5*tailleFrustrum*ratioLargeurHauteur;
-            cameraortho.right=0.5 * tailleFrustrum*ratioLargeurHauteur;
-            cameraortho.top=0.5*tailleFrustrum;
-            cameraortho.bottom= -0.5*tailleFrustrum;
-            cameraortho.updateProjectionMatrix();
-
+            camera.aspect= ratioLargeurHauteur;
+            camera.updateProjectionMatrix();
             renderer.setSize(SCREEN_WIDTH,SCREEN_HEIGHT);
         }
         window.addEventListener("resize",onWindowResize);
@@ -84,18 +96,7 @@
                     else
                         console.log("arret de la rotation auto")
                     break;
-                case 'c':
-                    choixcamera= ! choixcamera;
-                    if(choixcamera){
-                        console.log("projection perspective");
-                        cameraactive= cameraper;
-                    }
-                    else {
-                        console.log("projection orthographique")
-                        cameraactive=cameraortho;
-                    }
-
-                    break
+                    
             }
         }
         document.addEventListener("keydown",evenementTouche);
